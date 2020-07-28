@@ -1,0 +1,9 @@
+batch_size=256
+lr=0.0001
+dataset=pos_only
+activation=softmax
+epochs=10
+arch=resnet18
+dataset_train=data/eccv_train.json
+dataset_val=data/eccv_val.json
+dataset_test=data/eccv_test.json

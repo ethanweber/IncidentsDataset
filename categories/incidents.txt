@@ -1,0 +1,43 @@
+damaged
+flooded
+dirty contamined
+blocked
+collapsed
+snow covered
+under construction
+burned
+on fire
+with smoke
+ice storm
+drought
+dust sand storm
+thunderstorm
+wildfire
+tropical cyclone
+heavy rainfall
+tornado
+derecho
+earthquake
+landslide
+mudslide mudflow
+rockslide rockfall
+snowslide avalanche
+volcanic eruption
+sinkhole
+storm surge
+fog
+hailstorm
+dust devil
+fire whirl
+traffic jam
+ship boat accident
+airplane accident
+car accident
+train accident
+bus accident
+bicycle accident
+motorcycle accident
+van accident
+truck accident
+oil spill
+nuclear explosion

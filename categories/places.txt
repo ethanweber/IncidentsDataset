@@ -1,0 +1,49 @@
+badlands
+beach
+bridge
+building facade
+building outdoor
+cabin outdoor
+coast
+construction site
+dam
+desert road
+desert
+downtown
+excavation
+farm
+field
+fire station
+forest
+forest road
+gas station
+glacier
+highway
+house
+industrial area
+junkyard
+lake natural
+landfill
+lighthouse
+mountain
+nuclear power plant
+ocean
+oil rig
+park
+parking lot
+pier
+port
+power line
+railroad track
+religious building
+residential neighborhood
+river
+sky
+skyscraper
+slum
+snowfield
+sports field
+street
+valley
+village
+volcano
