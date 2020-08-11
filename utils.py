@@ -53,8 +53,8 @@ def save_checkpoint(state,
                     is_best,
                     session_name,
                     filename='checkpoint'):
-    path = os.path.join(session_name, "_{}.pth.tar".format(filename))
-    best_path = os.path.join(session_name, "_{}_best.pth.tar".format(filename))
+    path = os.path.join(session_name, "{}.pth.tar".format(filename))
+    best_path = os.path.join(session_name, "{}_best.pth.tar".format(filename))
     torch.save(state, path)
     if is_best:
         shutil.copyfile(path, best_path)

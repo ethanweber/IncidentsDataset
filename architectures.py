@@ -134,14 +134,10 @@ def get_incidents_model(args):
     # the place model
     place_layer = get_place_layer(args)
 
-    #     print("Parallelizing incidents model with {} gpu(s).".format(4))
-    print("Let's use", torch.cuda.device_count(), "GPUs!")
-    trunk_model = torch.nn.DataParallel(
-        trunk_model)  # , device_ids=[0, 1, 2, 3])
-    incident_layer = torch.nn.DataParallel(
-        incident_layer)  # , device_ids=[0, 1, 2, 3])
-    place_layer = torch.nn.DataParallel(
-        place_layer)  # , device_ids=[0, 1, 2, 3])
+    print("Let's use", args.num_gpus, "GPUs!")
+    trunk_model = torch.nn.DataParallel(trunk_model, device_ids=range(args.num_gpus))
+    incident_layer = torch.nn.DataParallel(incident_layer, device_ids=range(args.num_gpus))
+    place_layer = torch.nn.DataParallel(place_layer, device_ids=range(args.num_gpus))
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     trunk_model.to(device)

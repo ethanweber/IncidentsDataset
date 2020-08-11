@@ -53,30 +53,31 @@ def train(args, train_loader, all_models, optimizer, epoch):
         # measure data loading time
         a_v_data_time.update(time.time() - end_time)
 
+        image_v = input_data.cuda(non_blocking=True)
         target_p_v = target_p_v.cuda(non_blocking=True)
         target_d_v = target_d_v.cuda(non_blocking=True)
         weight_p_v = weight_p_v.cuda(non_blocking=True)
         weight_d_v = weight_d_v.cuda(non_blocking=True)
 
-        input_var = torch.autograd.Variable(input_data)
-        target_p_var = torch.autograd.Variable(target_p_v)
-        target_d_var = torch.autograd.Variable(target_d_v)
-        weight_p_var = torch.autograd.Variable(weight_p_v)
-        weight_d_var = torch.autograd.Variable(weight_d_v)
+        # input_v = torch.autograd.Variable(image_v)
+        # target_p_v = torch.autograd.Variable(target_p_v)
+        # target_d_v = torch.autograd.Variable(target_d_v)
+        # weight_p_v = torch.autograd.Variable(weight_p_v)
+        # weight_d_v = torch.autograd.Variable(weight_d_v)
 
         # compute output
-        output = trunk_model(input_var)
+        output = trunk_model(image_v)
         place_output = place_layer(output)
         incident_output = incident_layer(output)
 
         # get the loss according to parameters
         loss, incident_output, place_output = get_loss(args,
                                                        incident_output,
-                                                       target_d_var,
-                                                       weight_d_var,
+                                                       target_d_v,
+                                                       weight_d_v,
                                                        place_output,
-                                                       target_p_var,
-                                                       weight_p_var)
+                                                       target_p_v,
+                                                       weight_p_v)
 
         # measure accuracy and record loss
         incident_prec1, incident_prec5 = accuracy(incident_output.data, target_d_v, topk=1), \
@@ -196,13 +197,20 @@ def main():
         lr=args.lr)
 
     all_models = (trunk_model, incident_layer, place_layer)
+
     if args.mode == "test":
-        # TODO: use a test set, not the validation set
         print("\n\nRunning in test mode\n\n")
         print("loading test_loader")
         test_loader = get_dataset(args, is_train=False, is_test=True)
         metric = validate(args, test_loader, all_models, epoch=-1, writer=None)
         print("metric on test set: {}".format(metric))
+        return
+    elif args.mode == "val":
+        print("\n\nRunning in val mode\n\n")
+        print("loading val_loader")
+        val_loader = get_dataset(args, is_train=False)  # TODO: don't shuffle
+        metric = validate(args, val_loader, all_models, epoch=-1, writer=None)
+        print("metric on val set: {}".format(metric))
         return
 
     # load train loader in this case
@@ -223,7 +231,8 @@ def main():
         is_best = mean_ap > best_mean_ap
         best_mean_ap = max(mean_ap, best_mean_ap)
         prefix2model = {"trunk": trunk_model,
-                        "incident": incident_layer, "place": place_layer}
+                        "incident": incident_layer,
+                        "place": place_layer}
         # TODO: maybe save at interval, regardless of validation accuracy
         for prefix in prefix2model:
             state = {
@@ -233,10 +242,11 @@ def main():
                 'best_mean_ap': best_mean_ap,
             }
             # TODO: need to specify the full path here! and create a folder if needed!
-            session_name = prefix
+            session_name = args.checkpoint_path
             save_checkpoint(state,
                             is_best,
-                            session_name)
+                            session_name,
+                            filename=prefix)
 
 
 if __name__ == "__main__":

@@ -156,8 +156,8 @@ def validate(args, val_loader, all_models, epoch=None, writer=None):
     top1_num_correct_all, top1_num_total_all = 0, 0
     top5_num_correct_all, top5_num_total_all = 0, 0
 
-    # including "no place" and "no incident"
     if args.activation == "softmax":
+        # in this case, include "no incident" and "no place"
         ap_incidents = [[] for i in range(len(index_to_incident_mapping) + 1)]
         ap_places = [[] for i in range(len(index_to_place_mapping) + 1)]
     elif args.activation == "sigmoid":
@@ -169,39 +169,28 @@ def validate(args, val_loader, all_models, epoch=None, writer=None):
 
     for batch_iteration, val_data_input in enumerate(val_loader):
 
-        input_data = val_data_input[0]
-        target_p_v = val_data_input[1]
-        target_d_v = val_data_input[2]
-        weight_p_v = val_data_input[3]
-        weight_d_v = val_data_input[4]
+        image_v = val_data_input[0].cuda(non_blocking=True)  # image variable (batch)
+        target_p_v = val_data_input[1].cuda(non_blocking=True)  # p for place
+        target_i_v = val_data_input[2].cuda(non_blocking=True)  # i for incident
+        weight_p_v = val_data_input[3].cuda(non_blocking=True)
+        weight_i_v = val_data_input[4].cuda(non_blocking=True)
 
         # measure data loading time
         a_v_data_time.update(time.time() - end_time)
 
-        target_p_v = target_p_v.cuda(non_blocking=True)
-        target_d_v = target_d_v.cuda(non_blocking=True)
-        weight_p_v = weight_p_v.cuda(non_blocking=True)
-        weight_d_v = weight_d_v.cuda(non_blocking=True)
-
-        input_var = torch.autograd.Variable(input_data)
-        target_p_var = torch.autograd.Variable(target_p_v)
-        target_d_var = torch.autograd.Variable(target_d_v)
-        weight_p_var = torch.autograd.Variable(weight_p_v)
-        weight_d_var = torch.autograd.Variable(weight_d_v)
-
         # compute output
-        output = trunk_model(input_var)
+        output = trunk_model(image_v)
         place_output = place_model(output)
         incident_output = incident_model(output)
 
         # get the loss
         loss, incident_output, place_output = get_loss(args,
                                                        incident_output,
-                                                       target_d_var,
-                                                       weight_d_var,
+                                                       target_i_v,
+                                                       weight_i_v,
                                                        place_output,
-                                                       target_p_var,
-                                                       weight_p_var)
+                                                       target_p_v,
+                                                       weight_p_v)
 
         # prepare for average precison calculations
         # make sure this is batch size
@@ -209,8 +198,8 @@ def validate(args, val_loader, all_models, epoch=None, writer=None):
         for batch_idx in range(incident_output.shape[0]):
             np_incident_output = incident_output[batch_idx].cpu(
             ).detach().numpy()
-            np_target_d_var = target_d_var[batch_idx].cpu().detach().numpy()
-            np_weight_d_var = weight_d_var[batch_idx].cpu().detach().numpy()
+            np_target_i_v = target_i_v[batch_idx].cpu().detach().numpy()
+            np_weight_i_v = weight_i_v[batch_idx].cpu().detach().numpy()
 
             np_incident_output_shape = np_incident_output.shape[0]
             if args.activation == "softmax":
@@ -218,8 +207,8 @@ def validate(args, val_loader, all_models, epoch=None, writer=None):
 
             for class_idx in range(np_incident_output_shape):
                 confidence = np_incident_output[class_idx]
-                label = np_target_d_var[class_idx]
-                weight = np_weight_d_var[class_idx]
+                label = np_target_i_v[class_idx]
+                weight = np_weight_i_v[class_idx]
 
                 pos = (label == 1 and weight > 0)
                 neg = (label == 0 and weight > 0)
@@ -229,8 +218,8 @@ def validate(args, val_loader, all_models, epoch=None, writer=None):
                     ap_incidents[class_idx].append((confidence, 0))
 
             np_place_output = place_output[batch_idx].cpu().detach().numpy()
-            np_target_p_var = target_p_var[batch_idx].cpu().detach().numpy()
-            np_weight_p_var = weight_p_var[batch_idx].cpu().detach().numpy()
+            np_target_p_v = target_p_v[batch_idx].cpu().detach().numpy()
+            np_weight_p_v = weight_p_v[batch_idx].cpu().detach().numpy()
 
             np_place_output_shape = np_place_output.shape[0]
             if args.activation == "softmax":
@@ -238,8 +227,8 @@ def validate(args, val_loader, all_models, epoch=None, writer=None):
 
             for class_idx in range(np_place_output_shape):
                 confidence = np_place_output[class_idx]
-                label = np_target_p_var[class_idx]
-                weight = np_weight_p_var[class_idx]
+                label = np_target_p_v[class_idx]
+                weight = np_weight_p_v[class_idx]
 
                 pos = (label == 1 and weight > 0)
                 neg = (label == 0 and weight > 0)
@@ -249,13 +238,13 @@ def validate(args, val_loader, all_models, epoch=None, writer=None):
                     ap_places[class_idx].append((confidence, 0))
 
         # incident accuracy
-        incident_prec1 = accuracy(incident_output.data, target_d_v, topk=1)
-        incident_prec5 = accuracy(incident_output.data, target_d_v, topk=5)
+        incident_prec1 = accuracy(incident_output.data, target_i_v, topk=1)
+        incident_prec5 = accuracy(incident_output.data, target_i_v, topk=5)
 
-        top1_num_correct, top1_num_total = get_acc_num_correct_out_of_total(incident_output.data, target_d_v, topk=1)
+        top1_num_correct, top1_num_total = get_acc_num_correct_out_of_total(incident_output.data, target_i_v, topk=1)
         top1_num_correct_all += top1_num_correct
         top1_num_total_all += top1_num_total
-        top5_num_correct, top5_num_total = get_acc_num_correct_out_of_total(incident_output.data, target_d_v, topk=5)
+        top5_num_correct, top5_num_total = get_acc_num_correct_out_of_total(incident_output.data, target_i_v, topk=5)
         top5_num_correct_all += top5_num_correct
         top5_num_total_all += top5_num_total
 
@@ -263,11 +252,11 @@ def validate(args, val_loader, all_models, epoch=None, writer=None):
         place_prec1 = accuracy(place_output.data, target_p_v, topk=1)
         place_prec5 = accuracy(place_output.data, target_p_v, topk=5)
 
-        a_v_losses.update(loss.data, input_data.size(0))
-        a_v_place_top1.update(place_prec1, input_data.size(0))
-        a_v_incident_top1.update(incident_prec1, input_data.size(0))
-        a_v_place_top5.update(place_prec5, input_data.size(0))
-        a_v_incident_top5.update(incident_prec5, input_data.size(0))
+        a_v_losses.update(loss.data, image_v.size(0))
+        a_v_place_top1.update(place_prec1, image_v.size(0))
+        a_v_incident_top1.update(incident_prec1, image_v.size(0))
+        a_v_place_top5.update(place_prec5, image_v.size(0))
+        a_v_incident_top5.update(incident_prec5, image_v.size(0))
 
         # measure elapsed time
         a_v_batch_time.update(time.time() - end_time)
@@ -278,10 +267,10 @@ def validate(args, val_loader, all_models, epoch=None, writer=None):
                   'Time {a_v_batch_time.val:.3f} ({a_v_batch_time.avg:.3f})\t'
                   'Data {a_v_data_time.val:.3f} ({a_v_data_time.avg:.3f})\t'
                   'Loss {a_v_losses.val:.4f} ({a_v_losses.avg:.4f})\t'
-                  'incident Prec@1 {a_v_incident_top1.val:.3f} ({a_v_incident_top1.avg:.3f})\t'
+                  'Incident Prec@1 {a_v_incident_top1.val:.3f} ({a_v_incident_top1.avg:.3f})\t'
                   'Place Prec@1 {a_v_place_top1.val:.3f} ({a_v_place_top1.avg:.3f})\t'
                   'Place Prec@5 {a_v_place_top5.val:.3f} ({a_v_place_top5.avg:.3f})\t'
-                  'incident Prec@5 {a_v_incident_top5.val:.3f} ({a_v_incident_top5.avg:.3f})\t'.format(
+                  'Incident Prec@5 {a_v_incident_top5.val:.3f} ({a_v_incident_top5.avg:.3f})\t'.format(
                 epoch, batch_iteration,
                 len(val_loader),
                 a_v_batch_time=a_v_batch_time,

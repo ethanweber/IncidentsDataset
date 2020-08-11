@@ -5,19 +5,18 @@ See the following pages for more details:
  - ECCV 2020 Paper "Detecting natural disasters and damage in the wild" [here]().
 
 # Obtain the data
+> Note that the data is not accessible yet! It's undergoing sensitive content and bias analysis. If you have any questions or would like data access sooner than public release, please contact incidentsdataset@googlegroups.com. The pretrained model weights, however, are available and should work as expected.
 
-Download the data at [here](https://drive.google.com/drive/folders/1kPn0u6jghhaAv_1Nj7tMcPkSLkokNzTk?usp=sharing). The data structure is in JSON with URLs and labels. We provide code to download the images from URLs. The files are in the folliwing form:
+Download the data at [here](https://drive.google.com/drive/folders/1kPn0u6jghhaAv_1Nj7tMcPkSLkokNzTk?usp=sharing). The data structure is in JSON with URLs and labels. We provide code to download the images from URLs. The files are in the following form:
 
 ```
 # single-label multi-class (ECCV 2020 version):
 eccv_train.json
 eccv_val.json
-eccv_test.json
 
 # multi-label multi-class (latest version):
 multi_label_train.json
 multi_label_val.json
-multi_label_test.json
 ```
 
 1. Download chosen JSON files and move to the [data](data/) folder.
@@ -31,6 +30,8 @@ multi_label_test.json
     # run this and follow instructions
     python run_download_images.py --help
     ```
+   
+4. Take note of image download location. This is param `--images_path` in [parser.py](/parser).
 
 # Setup environment
 
@@ -55,12 +56,28 @@ multi_label_test.json
     eccv_final_model_incident.pth.tar
     eccv_final_model_place.pth.tar
     ```
+   
+2. Run inference with the model with [RunModel.ipynb](RunModel.ipynb).
 
-```
-# train the model
-python run_model.py --config=configs/eccv_final_model --mode=train
+# TODO(ethan): allow option to run this on the validation set, since we won't release the test set
+3. Compute mAP and report numbers.
+    ```
+    # test the model on the validation set
+    python run_model.py \
+        --config=configs/eccv_final_model \
+        --mode=val \
+        --checkpoint_path=pretrained_weights \
+        --images_path=/path/to/downloaded/images/folder/
+    ```
 
-# test the model
-# TODO: set the checkpoint
-python run_model.py --config=configs/eccv_final_model --mode=test
-```
+4. Train a model.
+    ```
+    # train the model
+    python run_model.py \
+        --config=configs/eccv_final_model \
+        --mode=train \
+        --checkpoint_path=runs/eccv_final_model
+   
+    # visualize tensorboard
+    tensorboard --samples_per_plugin scalars=100,images=10 --port 8880 --bind_all --logdir runs/eccv_final_model
+    ```
