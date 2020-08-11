@@ -5,7 +5,7 @@ See the following pages for more details:
  - ECCV 2020 Paper "Detecting natural disasters and damage in the wild" [here]().
 
 # Obtain the data
-> Note that the data is not accessible yet! It's undergoing sensitive content and bias analysis. If you have any questions or would like data access sooner than public release, please contact incidentsdataset@googlegroups.com. The pretrained model weights, however, are available and should work as expected.
+> Note that the data is not accessible yet. If you have any questions or would like data access sooner than public release, please contact incidentsdataset@googlegroups.com.
 
 Download the data at [here](https://drive.google.com/drive/folders/1kPn0u6jghhaAv_1Nj7tMcPkSLkokNzTk?usp=sharing). The data structure is in JSON with URLs and labels. We provide code to download the images from URLs. The files are in the following form:
 
@@ -34,8 +34,6 @@ multi_label_val.json
 4. Take note of image download location. This is param `--images_path` in [parser.py](/parser).
 
 # Setup environment
-
-
 
 # Using the Incident Model
 
