@@ -59,7 +59,6 @@ multi_label_val.json
    
 2. Run inference with the model with [RunModel.ipynb](RunModel.ipynb).
 
-# TODO(ethan): allow option to run this on the validation set, since we won't release the test set
 3. Compute mAP and report numbers.
     ```
     # test the model on the validation set
