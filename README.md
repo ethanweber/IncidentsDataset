@@ -2,7 +2,7 @@
 
 See the following pages for more details:
  - Project page: [IncidentsDataset.csail.mit.edu](http://incidentsdataset.csail.mit.edu/).
- - ECCV 2020 Paper "Detecting natural disasters and damage in the wild" [here]().
+ - ECCV 2020 Paper "Detecting natural disasters, damage, and incidents in the wild" [here](http://incidentsdataset.csail.mit.edu/IncidentsDatasetPaper.pdf).
 
 # Obtain the data
 > Note that the data is not accessible yet. If you have any questions or would like data access sooner than public release, please contact incidentsdataset@googlegroups.com.
@@ -34,6 +34,15 @@ multi_label_val.json
 4. Take note of image download location. This is param `--images_path` in [parser.py](/parser).
 
 # Setup environment
+
+```
+git clone https://github.com/ethanweber/IncidentsDataset
+cd IncidentsDataset
+
+conda create -n incidents python=3.8.2
+conda activate incidents
+pip install -r requirements.txt
+```
 
 # Using the Incident Model
 
@@ -78,3 +87,25 @@ multi_label_val.json
     # visualize tensorboard
     tensorboard --samples_per_plugin scalars=100,images=10 --port 8880 --bind_all --logdir runs/eccv_final_model
     ```
+   
+# Citation
+
+If you find this work helpful for your research, please consider citing our paper:
+
+```
+@InProceedings{weber2020cvpr,
+  title={Detecting natural disasters, damage, and incidents in the wild},
+  author={Weber, Ethan and Marzo, Nuria and Papadopoulos, Dim P. and Biswas, Aritro and Lapedriza, Agata and Ofli, Ferda and Imran, Muhammad and Torralba, Antonio},
+  booktitle={The European Conference on Computer Vision (ECCV)},
+  month = {August},
+  year={2020}
+}
+```
+
+# License
+
+This work is licensed with the MIT License. See [LICENSE](LICENSE) for details.
+
+# Acknowledgements
+
+This work is supported by the CSAIL-QCRI collaboration project and RTI2018-095232-B-C22 grant from the Spanish Ministry of Science, Innovation and Universities.
