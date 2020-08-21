@@ -49,6 +49,9 @@ pip install -r requirements.txt
 1. Download pretrained weights [here](https://drive.google.com/drive/folders/1k2nggK3LqyBE5huGpL3E-JXoEv7o6qRq?usp=sharing). Place desired files in the [pretrained_weights](pretrained_weights/) folder. Note that these take the following structure:
 
     ```
+    # run this script to download everything
+    python run_download_weights.py
+
     # pretrained weights with Places 365
     resnet18_places365.pth.tar
     resnet50_places365.pth.tar

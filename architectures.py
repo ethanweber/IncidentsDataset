@@ -74,11 +74,10 @@ def get_trunk_model(args):
         print("loading places weights for pretraining")
         model = models.__dict__[args.arch](num_classes=365)
         dir_path = os.path.dirname(os.path.realpath(__file__))
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if args.arch == "resnet18":
             model_file = os.path.join(dir_path, "pretrained_weights/resnet18_places365.pth.tar")
-            # model_file = "migration_code/resnet18_places365.pth.tar"  # TODO: use a better path
-            checkpoint = torch.load(
-                model_file, map_location=lambda storage, loc: storage)
+            checkpoint = torch.load(model_file, map_location=device)
             state_dict = {str.replace(k, 'module.', ''): v for k,
                                                                v in checkpoint['state_dict'].items()}
             model.load_state_dict(state_dict)
@@ -86,9 +85,7 @@ def get_trunk_model(args):
             model = nn.Sequential(model, nn.ReLU())
         elif args.arch == "resnet50":
             model_file = os.path.join(dir_path, "pretrained_weights/resnet50_places365.pth.tar")
-            # model_file = "migration_code/resnet18_places365.pth.tar"  # TODO: use a better path
-            checkpoint = torch.load(
-                model_file, map_location=lambda storage, loc: storage)
+            checkpoint = torch.load(model_file, map_location=device)
             state_dict = {str.replace(k, 'module.', ''): v for k,
                                                                v in checkpoint['state_dict'].items()}
             model.load_state_dict(state_dict)
@@ -167,9 +164,10 @@ def update_incidents_model_with_checkpoint(incidents_model, args):
         args.checkpoint_path, "{}_place.pth.tar".format(config_name))
     incident_resume = os.path.join(
         args.checkpoint_path, "{}_incident.pth.tar".format(config_name))
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     for (path, net) in [(trunk_resume, trunk_model), (place_resume, place_layer), (incident_resume, incident_layer)]:
         if os.path.isfile(path):
-            checkpoint = torch.load(path)
+            checkpoint = torch.load(path, map_location=device)
             args.start_epoch = checkpoint['epoch']
             net.load_state_dict(checkpoint['state_dict'])
             print("Loaded checkpoint '{}' (epoch {}).".format(path, checkpoint['epoch']))

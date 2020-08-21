@@ -18,10 +18,6 @@ from utils import get_index_to_incident_mapping, get_index_to_place_mapping
 app = Flask(__name__)
 app.jinja_env.filters['zip'] = zip
 
-# data
-IMAGES_PATH = "/data/vision/torralba/humanitarian/datasets/images_raw/"
-DATASET_FILENAME = "data/eccv_test.json"
-
 # model
 CONFIG_FILENAME = "configs/eccv_final_model"
 CHECKPOINT_PATH_FOLDER = "pretrained_weights/"

@@ -1,0 +1,11 @@
+tensorboardX==2.1
+ipykernel==5.3.4
+tqdm==4.48.2
+opencv-python==4.4.0.42
+torch
+torchvision
+matplotlib==3.3.1
+scikit-image==0.17.2
+ConfigArgParse==1.2.3
+googledrivedownloader
+requests==2.24.0
