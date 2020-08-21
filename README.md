@@ -96,7 +96,7 @@ pip install -r requirements.txt
 If you find this work helpful for your research, please consider citing our paper:
 
 ```
-@InProceedings{weber2020cvpr,
+@InProceedings{weber2020eccv,
   title={Detecting natural disasters, damage, and incidents in the wild},
   author={Weber, Ethan and Marzo, Nuria and Papadopoulos, Dim P. and Biswas, Aritro and Lapedriza, Agata and Ofli, Ferda and Imran, Muhammad and Torralba, Antonio},
   booktitle={The European Conference on Computer Vision (ECCV)},
