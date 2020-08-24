@@ -7,7 +7,7 @@ See the following pages for more details:
 # Obtain the data
 > Note that the data is not accessible yet. If you have any questions or would like data access sooner than public release, please contact incidentsdataset@googlegroups.com.
 
-Download the data at [here](https://drive.google.com/drive/folders/1kPn0u6jghhaAv_1Nj7tMcPkSLkokNzTk?usp=sharing). The data structure is in JSON with URLs and labels. We provide code to download the images from URLs. The files are in the following form:
+The data structure is in JSON with URLs and labels. We will provide code to download the images from URLs. The files are in the following form:
 
 ```
 # single-label multi-class (ECCV 2020 version):
