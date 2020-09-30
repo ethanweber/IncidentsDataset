@@ -5,7 +5,7 @@ See the following pages for more details:
  - ECCV 2020 Paper "Detecting natural disasters, damage, and incidents in the wild" [here](http://incidentsdataset.csail.mit.edu/IncidentsDatasetPaper.pdf).
 
 # Obtain the data
-> Note that the data is not accessible yet. If you have any questions or would like data access sooner than public release, please contact incidentsdataset@googlegroups.com.
+> Please contact incidentsdataset@googlegroups.com to obtain the data.
 
 The data structure is in JSON with URLs and labels. We will provide code to download the images from URLs. The files are in the following form:
 
