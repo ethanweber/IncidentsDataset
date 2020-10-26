@@ -1,10 +1,12 @@
 # Incidents Dataset
 
 See the following pages for more details:
- - Project page: [IncidentsDataset.csail.mit.edu](http://incidentsdataset.csail.mit.edu/).
- - ECCV 2020 Paper "Detecting natural disasters, damage, and incidents in the wild" [here](http://incidentsdataset.csail.mit.edu/IncidentsDatasetPaper.pdf).
+
+- Project page: [IncidentsDataset.csail.mit.edu](http://incidentsdataset.csail.mit.edu/).
+- ECCV 2020 Paper "Detecting natural disasters, damage, and incidents in the wild" [here](http://incidentsdataset.csail.mit.edu/IncidentsDatasetPaper.pdf).
 
 # Obtain the data
+
 > Please contact incidentsdataset@googlegroups.com to obtain the data.
 
 The data structure is in JSON with URLs and labels. We will provide code to download the images from URLs. The files are in the following form:
@@ -23,14 +25,8 @@ multi_label_val.json
 
 2. Look at [VisualizeDataset.ipynb](VisualizeDataset.ipynb) to see the composition of the dataset files.
 
-3. Download the images specified in the JSON files.
+3. Download the images at the URLs specified in the JSON files.
 
-    ```
-    cd data/
-    # run this and follow instructions
-    python run_download_images.py --help
-    ```
-   
 4. Take note of image download location. This is param `--images_path` in [parser.py](/parser).
 
 # Setup environment
@@ -48,49 +44,51 @@ pip install -r requirements.txt
 
 1. Download pretrained weights [here](https://drive.google.com/drive/folders/1k2nggK3LqyBE5huGpL3E-JXoEv7o6qRq?usp=sharing). Place desired files in the [pretrained_weights](pretrained_weights/) folder. Note that these take the following structure:
 
-    ```
-    # run this script to download everything
-    python run_download_weights.py
+   ```
+   # run this script to download everything
+   python run_download_weights.py
 
-    # pretrained weights with Places 365
-    resnet18_places365.pth.tar
-    resnet50_places365.pth.tar
-    
-    # ECCV baseline model weights
-    eccv_baseline_model_trunk.pth.tar
-    eccv_baseline_model_incident.pth.tar
-    eccv_baseline_model_place.pth.tar
-    
-    # ECCV final model weights
-    eccv_final_model_trunk.pth.tar
-    eccv_final_model_incident.pth.tar
-    eccv_final_model_place.pth.tar
-    ```
-   
+   # pretrained weights with Places 365
+   resnet18_places365.pth.tar
+   resnet50_places365.pth.tar
+
+   # ECCV baseline model weights
+   eccv_baseline_model_trunk.pth.tar
+   eccv_baseline_model_incident.pth.tar
+   eccv_baseline_model_place.pth.tar
+
+   # ECCV final model weights
+   eccv_final_model_trunk.pth.tar
+   eccv_final_model_incident.pth.tar
+   eccv_final_model_place.pth.tar
+   ```
+
 2. Run inference with the model with [RunModel.ipynb](RunModel.ipynb).
 
 3. Compute mAP and report numbers.
-    ```
-    # test the model on the validation set
-    python run_model.py \
-        --config=configs/eccv_final_model \
-        --mode=val \
-        --checkpoint_path=pretrained_weights \
-        --images_path=/path/to/downloaded/images/folder/
-    ```
+
+   ```
+   # test the model on the validation set
+   python run_model.py \
+       --config=configs/eccv_final_model \
+       --mode=val \
+       --checkpoint_path=pretrained_weights \
+       --images_path=/path/to/downloaded/images/folder/
+   ```
 
 4. Train a model.
-    ```
-    # train the model
-    python run_model.py \
-        --config=configs/eccv_final_model \
-        --mode=train \
-        --checkpoint_path=runs/eccv_final_model
-   
-    # visualize tensorboard
-    tensorboard --samples_per_plugin scalars=100,images=10 --port 8880 --bind_all --logdir runs/eccv_final_model
-    ```
-   
+
+   ```
+   # train the model
+   python run_model.py \
+       --config=configs/eccv_final_model \
+       --mode=train \
+       --checkpoint_path=runs/eccv_final_model
+
+   # visualize tensorboard
+   tensorboard --samples_per_plugin scalars=100,images=10 --port 8880 --bind_all --logdir runs/eccv_final_model
+   ```
+
 # Citation
 
 If you find this work helpful for your research, please consider citing our paper:
