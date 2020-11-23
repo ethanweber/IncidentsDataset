@@ -9,7 +9,7 @@ See the following pages for more details:
 
 > Please contact incidentsdataset@googlegroups.com to obtain the data.
 
-The data structure is in JSON with URLs and labels. We will provide code to download the images from URLs. The files are in the following form:
+The data structure is in JSON with URLs and labels. The files are in the following form:
 
 ```
 # single-label multi-class (ECCV 2020 version):
