@@ -7,7 +7,7 @@ See the following pages for more details:
 
 # Obtain the data
 
-> Please contact incidentsdataset@googlegroups.com to obtain the data.
+> Please fill out [this form](https://docs.google.com/forms/d/e/1FAIpQLSe1XEHEXe0DskkKWCpCVzho8H7RTIBDEVh3P16NtIjJEsm2ZQ/viewform) and then email/notify incidentsdataset@googlegroups.com to request the data.
 
 The data structure is in JSON with URLs and labels. The files are in the following form:
 
