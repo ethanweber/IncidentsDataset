@@ -12,6 +12,7 @@ from torch.utils.data import Dataset
 from tqdm import tqdm
 import torchvision.transforms as transforms
 from collections import defaultdict
+import copy
 
 from utils import (
     get_place_to_index_mapping,
@@ -120,7 +121,8 @@ class IncidentDataset(Dataset):
             transform=None,
             use_all=False,
             pos_only=False,
-            using_softmax=False):
+            using_softmax=False,
+            use_multi_label=True):
 
         self.images_path = images_path
         self.use_all = use_all
@@ -134,10 +136,14 @@ class IncidentDataset(Dataset):
         print("adding incident images")
         for filename, original_data in tqdm(incidents_images.items()):
 
-            splits = get_split_dictionary(original_data)
+            if not use_multi_label:
+                splits = get_split_dictionary(original_data)
+            else:
+                splits = [copy.deepcopy(original_data)]
             for data in splits:
-
-                assert len(data["incidents"]) <= 1 and len(data["places"]) <= 1
+                
+                if not use_multi_label:
+                    assert len(data["incidents"]) <= 1 and len(data["places"]) <= 1
 
                 if using_softmax:
                     # the +1 to len accounts for "no place" and "no incident"
@@ -228,6 +234,13 @@ def get_dataset(args,
     # main dataset (incidents images)
     if is_train:
         incidents_images = get_loaded_json_file(args.dataset_train)
+        idx = int(len(incidents_images) * args.percent_of_training_set / 100.0)
+        keys = list(incidents_images.keys())[:idx]
+        print(len(keys))
+        incidents_images_temp = {}
+        for key in keys:
+            incidents_images_temp[key] = incidents_images[key]
+        incidents_images = incidents_images_temp
     else:
         if is_test == False:  # validation images
             incidents_images = get_loaded_json_file(args.dataset_val)

@@ -12,7 +12,7 @@ import json
 
 def get_place_to_index_mapping():
     place_to_index_mapping = {}
-    file1 = open("categories/places.txt", "r")
+    file1 = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "categories/places.txt"), "r")
     lines = [line.rstrip() for line in file1.readlines()]
     for idx, place in enumerate(lines):
         place_to_index_mapping[place] = idx
@@ -29,7 +29,7 @@ def get_index_to_place_mapping():
 
 def get_incident_to_index_mapping():
     incident_to_index_mapping = {}
-    file1 = open("categories/incidents.txt", "r")
+    file1 = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "categories/incidents.txt"), "r")
     lines = [line.rstrip() for line in file1.readlines()]
     for idx, incident in enumerate(lines):
         incident_to_index_mapping[incident] = idx

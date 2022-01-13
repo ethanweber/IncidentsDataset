@@ -26,7 +26,6 @@ from parser import get_parser, get_postprocessed_args
 from dataset import get_dataset
 from utils import save_checkpoint
 
-
 def train(args, train_loader, all_models, optimizer, epoch):
     """
     Trains for one epoch of the train_loader dataset.
@@ -222,7 +221,7 @@ def main():
     for epoch in range(args.start_epoch, args.epochs):
 
         # train for an epoch
-        train(args, train_loader, all_models, optimizer, epoch)
+        train(args, train_loader, all_models, optimizer, epoch)        
 
         # evaluate on validation set
         mean_ap = validate(args, val_loader, all_models, epoch=epoch, writer=writer)

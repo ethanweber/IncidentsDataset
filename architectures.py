@@ -157,13 +157,20 @@ def update_incidents_model_with_checkpoint(incidents_model, args):
 
     config_name = os.path.basename(args.config)
     print(config_name)
+    
+    best_str = "_best" if args.mode == "test" else ""
 
     trunk_resume = os.path.join(
-        args.checkpoint_path, "{}_trunk.pth.tar".format(config_name))
+        args.checkpoint_path, "trunk{}.pth.tar".format(best_str))
     place_resume = os.path.join(
-        args.checkpoint_path, "{}_place.pth.tar".format(config_name))
+        args.checkpoint_path, "place{}.pth.tar".format(best_str))
     incident_resume = os.path.join(
-        args.checkpoint_path, "{}_incident.pth.tar".format(config_name))
+        args.checkpoint_path, "incident{}.pth.tar".format(best_str))
+
+    # trunk_resume = "/data/vision/torralba/scratch/ethanweber/DamageAssessment/external/IncidentsDataset/pretrained_weights/eccv_final_model_trunk.pth.tar"
+    # place_resume = "/data/vision/torralba/scratch/ethanweber/DamageAssessment/external/IncidentsDataset/pretrained_weights/eccv_final_model_place.pth.tar"
+    # incident_resume = "/data/vision/torralba/scratch/ethanweber/DamageAssessment/external/IncidentsDataset/pretrained_weights/eccv_final_model_incident.pth.tar"
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     for (path, net) in [(trunk_resume, trunk_model), (place_resume, place_layer), (incident_resume, incident_layer)]:
         if os.path.isfile(path):
@@ -219,6 +226,8 @@ def get_predictions_from_model(args,
     incident_probs, incident_idx = incident_output.sort(1, True)
     place_probs, place_idx = place_output.sort(1, True)
 
+    temp_inference_dict = {}
+
     # batch_input[0] is the batch dimension (the # in the batch)
     for batch_idx in range(len(batch_input.numpy())):
         incidents = []
@@ -246,10 +255,12 @@ def get_predictions_from_model(args,
             "place_probs": place_probs[batch_idx].cpu().detach().numpy()[:topk]
         }
         image_path = image_paths[batch_idx]
-        inference_dict[image_path] = output
+        temp_inference_dict[image_path] = output
 
     # TODO: maybe return the output here
-    return None
+    if inference_dict is not None:
+        inference_dict.update(temp_inference_dict)
+    return temp_inference_dict
 
 
 def get_predictions_from_model_all(args, incidents_model, batch_input, image_paths, index_to_incident_mapping,
