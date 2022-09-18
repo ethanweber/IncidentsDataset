@@ -2,7 +2,7 @@
 
 See the following pages for more details:
 
-- Project page: [IncidentsDataset.csail.mit.edu](http://incidentsdataset.csail.mit.edu/).
+- Project page: [http://incidentsdataset.csail.mit.edu/](http://incidentsdataset.csail.mit.edu/) or [https://ethanweber.me/IncidentsDataset](https://ethanweber.me/IncidentsDataset).
 - ECCV 2020 Paper "Detecting natural disasters, damage, and incidents in the wild" [here](https://arxiv.org/abs/2008.09188).
 - **Extended Paper** "Incidents1M: a large-scale dataset of images with natural disasters, damage, and incidents" [here](https://arxiv.org/abs/2201.04236).
 
